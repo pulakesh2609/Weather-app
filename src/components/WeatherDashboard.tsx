@@ -61,27 +61,8 @@ interface Toast {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Gradient Map                                                       */
+/*  Helpers (unchanged logic)                                          */
 /* ------------------------------------------------------------------ */
-const getBackgroundGradient = (description: string, isDay: boolean): string => {
-    const desc = description.toLowerCase();
-    if (desc.includes('thunder') || desc.includes('storm'))
-        return 'from-gray-800 via-slate-800 to-gray-900';
-    if (desc.includes('snow') || desc.includes('blizzard') || desc.includes('sleet'))
-        return 'from-indigo-300 via-blue-200 to-slate-300';
-    if (desc.includes('rain') || desc.includes('drizzle') || desc.includes('shower'))
-        return 'from-slate-600 via-gray-600 to-slate-800';
-    if (desc.includes('fog') || desc.includes('mist') || desc.includes('haze'))
-        return 'from-gray-400 via-slate-400 to-gray-500';
-    if (desc.includes('overcast') || desc.includes('cloudy'))
-        return 'from-slate-700 via-gray-700 to-slate-900';
-    if (desc.includes('partly cloudy'))
-        return isDay ? 'from-sky-400 via-blue-400 to-slate-500' : 'from-indigo-800 via-slate-800 to-gray-900';
-    if (desc.includes('clear') || desc.includes('sunny'))
-        return isDay ? 'from-blue-400 via-sky-400 to-blue-600' : 'from-indigo-900 via-purple-900 to-slate-900';
-    return isDay ? 'from-sky-500 via-blue-500 to-cyan-500' : 'from-slate-800 via-indigo-900 to-gray-900';
-};
-
 const getWeatherIcon = (description: string) => {
     const desc = description.toLowerCase();
     if (desc.includes('thunder') || desc.includes('storm')) return CloudLightning;
@@ -94,11 +75,11 @@ const getWeatherIcon = (description: string) => {
 };
 
 const getUvLabel = (uv: number): { label: string; color: string } => {
-    if (uv <= 2) return { label: 'Low', color: 'text-green-300' };
-    if (uv <= 5) return { label: 'Moderate', color: 'text-yellow-300' };
-    if (uv <= 7) return { label: 'High', color: 'text-orange-300' };
-    if (uv <= 10) return { label: 'Very High', color: 'text-red-300' };
-    return { label: 'Extreme', color: 'text-pink-300' };
+    if (uv <= 2) return { label: 'Low', color: 'text-emerald-400' };
+    if (uv <= 5) return { label: 'Moderate', color: 'text-yellow-400' };
+    if (uv <= 7) return { label: 'High', color: 'text-orange-400' };
+    if (uv <= 10) return { label: 'Very High', color: 'text-red-400' };
+    return { label: 'Extreme', color: 'text-pink-400' };
 };
 
 /* ------------------------------------------------------------------ */
@@ -114,7 +95,12 @@ const GlassCard = ({
     delay?: number;
 }) => (
     <div
-        className={`bg-white/15 backdrop-blur-lg border border-white/20 rounded-2xl shadow-lg ${className}`}
+        className={`
+      bg-white/10 backdrop-blur-xl saturate-150
+      border border-white/20 rounded-2xl
+      glass-shadow
+      ${className}
+    `}
         style={{ animationDelay: `${delay}ms` }}
     >
         {children}
@@ -122,30 +108,30 @@ const GlassCard = ({
 );
 
 const SkeletonBox = ({ className = '' }: { className?: string }) => (
-    <div className={`bg-white/20 rounded-xl animate-skeleton ${className}`} />
+    <div className={`bg-white/15 rounded-xl animate-skeleton ${className}`} />
 );
 
 const LoadingSkeleton = () => (
     <div className="w-full max-w-4xl mx-auto px-4 space-y-6 mt-8">
         {/* Main display skeleton */}
-        <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8">
-            <div className="flex flex-col items-center gap-4">
-                <SkeletonBox className="w-24 h-24 rounded-full" />
-                <SkeletonBox className="h-16 w-48" />
-                <SkeletonBox className="h-6 w-64" />
-                <SkeletonBox className="h-5 w-40" />
+        <div className="bg-white/8 backdrop-blur-xl saturate-150 border border-white/15 rounded-2xl p-10 glass-shadow">
+            <div className="flex flex-col items-center gap-5">
+                <SkeletonBox className="w-28 h-28 rounded-full" />
+                <SkeletonBox className="h-20 w-56" />
+                <SkeletonBox className="h-6 w-72" />
+                <SkeletonBox className="h-5 w-48" />
             </div>
         </div>
         {/* Details grid skeleton */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
             {[...Array(4)].map((_, i) => (
                 <div
                     key={i}
-                    className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-5"
+                    className="bg-white/8 backdrop-blur-xl saturate-150 border border-white/15 rounded-2xl p-6 glass-shadow"
                 >
-                    <SkeletonBox className="h-8 w-8 mb-3 rounded-full" />
-                    <SkeletonBox className="h-4 w-16 mb-2" />
-                    <SkeletonBox className="h-8 w-20" />
+                    <SkeletonBox className="h-10 w-10 mb-4 rounded-full" />
+                    <SkeletonBox className="h-4 w-16 mb-3" />
+                    <SkeletonBox className="h-9 w-24" />
                 </div>
             ))}
         </div>
@@ -160,9 +146,9 @@ const ToastNotification = ({
     onClose: (id: number) => void;
 }) => {
     const bgMap = {
-        error: 'bg-red-500/90',
-        warning: 'bg-amber-500/90',
-        info: 'bg-blue-500/90',
+        error: 'bg-red-500/80 border-red-400/30',
+        warning: 'bg-amber-500/80 border-amber-400/30',
+        info: 'bg-cyan-500/80 border-cyan-400/30',
     };
 
     useEffect(() => {
@@ -172,7 +158,7 @@ const ToastNotification = ({
 
     return (
         <div
-            className={`${bgMap[toast.type]} backdrop-blur-md text-white px-5 py-3 rounded-xl shadow-xl flex items-center gap-3 animate-fade-in`}
+            className={`${bgMap[toast.type]} backdrop-blur-xl border text-white px-5 py-3.5 rounded-2xl glass-shadow flex items-center gap-3 animate-fade-in`}
         >
             <AlertTriangle className="w-5 h-5 flex-shrink-0" />
             <span className="text-sm font-medium flex-1">{toast.message}</span>
@@ -217,7 +203,6 @@ export default function WeatherDashboard() {
             setLoading(true);
             setWeather(null);
 
-            /* Mixed-content warning */
             if (window.location.protocol === 'https:') {
                 addToast(
                     'Weatherstack free tier uses HTTP. Your browser may block this request on HTTPS. Run locally or use a proxy.',
@@ -246,9 +231,10 @@ export default function WeatherDashboard() {
                 setWeather(data as WeatherData);
                 localStorage.setItem('weather_last_city', q.trim());
             } catch (err: unknown) {
-                const errMsg = err instanceof TypeError && err.message.includes('fetch')
-                    ? 'Network error — the request was likely blocked due to mixed content (HTTP on HTTPS). Try running on localhost.'
-                    : 'Failed to fetch weather data. Please try again.';
+                const errMsg =
+                    err instanceof TypeError && err.message.includes('fetch')
+                        ? 'Network error — the request was likely blocked due to mixed content (HTTP on HTTPS). Try running on localhost.'
+                        : 'Failed to fetch weather data. Please try again.';
                 addToast(errMsg);
             } finally {
                 setLoading(false);
@@ -296,220 +282,289 @@ export default function WeatherDashboard() {
 
     /* ---------- derived ---------- */
     const description = weather?.current.weather_descriptions[0] ?? '';
-    const isDay = weather?.current.is_day === 'yes';
-    const gradient = weather
-        ? getBackgroundGradient(description, isDay)
-        : 'from-slate-700 via-gray-700 to-slate-900';
     const WeatherIcon = weather ? getWeatherIcon(description) : Cloud;
 
     /* ---------------------------------------------------------------- */
     /*  Render                                                           */
     /* ---------------------------------------------------------------- */
     return (
-        <div
-            className={`min-h-screen bg-gradient-to-br ${gradient} transition-all duration-1000 ease-in-out text-white`}
-        >
-            {/* Toast stack */}
-            <div className="fixed top-4 right-4 z-50 flex flex-col gap-3 max-w-sm">
-                {toasts.map((t) => (
-                    <ToastNotification key={t.id} toast={t} onClose={removeToast} />
-                ))}
+        <>
+            {/* ── Animated blob background ── */}
+            <div className="bg-vibrant" aria-hidden="true">
+                <div className="blob-purple" />
+                <div className="blob-accent" />
             </div>
 
-            <div className="max-w-4xl mx-auto px-4 py-8 md:py-12">
-                {/* ---------- Header ---------- */}
-                <header className="text-center mb-10 animate-fade-in">
-                    <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-1">
-                        🌍 Global Weather Insights
-                    </h1>
-                    <p className="text-white/60 text-sm font-medium">
-                        Real-time weather data · Powered by Weatherstack
-                    </p>
-                </header>
+            {/* ── Content layer ── */}
+            <div className="relative z-10 min-h-screen text-white">
+                {/* Toast stack */}
+                <div className="fixed top-5 right-5 z-50 flex flex-col gap-3 max-w-sm">
+                    {toasts.map((t) => (
+                        <ToastNotification key={t.id} toast={t} onClose={removeToast} />
+                    ))}
+                </div>
 
-                {/* ---------- Search ---------- */}
-                <form
-                    onSubmit={handleSearch}
-                    className="flex flex-col sm:flex-row items-stretch gap-3 max-w-xl mx-auto mb-10 animate-fade-in"
-                    style={{ animationDelay: '100ms' }}
-                >
-                    <div className="relative flex-1">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" />
-                        <input
-                            id="search-input"
-                            type="text"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            placeholder="Search city, zip, or coordinates…"
-                            className="w-full pl-12 pr-4 py-3 bg-white/15 backdrop-blur-lg border border-white/25 rounded-xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/40 transition-all text-sm font-medium"
-                        />
-                    </div>
+                <div className="max-w-4xl mx-auto px-5 py-10 md:py-16">
+                    {/* ── Header ── */}
+                    <header className="text-center mb-12 animate-fade-in">
+                        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-2 bg-gradient-to-r from-white via-cyan-200 to-white bg-clip-text text-transparent">
+                            🌍 Global Weather Insights
+                        </h1>
+                        <p className="text-white/50 text-sm font-medium tracking-wide">
+                            Real-time weather data · Powered by Weatherstack
+                        </p>
+                    </header>
 
-                    <button
-                        type="submit"
-                        id="search-button"
-                        className="px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-lg border border-white/25 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    {/* ── Search capsule ── */}
+                    <form
+                        onSubmit={handleSearch}
+                        className="flex flex-col sm:flex-row items-stretch gap-3 max-w-2xl mx-auto mb-12 animate-fade-in"
+                        style={{ animationDelay: '120ms' }}
                     >
-                        <Search className="w-4 h-4" />
-                        Search
-                    </button>
-
-                    <button
-                        type="button"
-                        id="locate-button"
-                        onClick={handleLocateMe}
-                        disabled={locating}
-                        className="px-5 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-lg border border-white/25 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
-                    >
-                        {locating ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                            <Navigation className="w-4 h-4" />
-                        )}
-                        Locate Me
-                    </button>
-                </form>
-
-                {/* ---------- Loading ---------- */}
-                {loading && <LoadingSkeleton />}
-
-                {/* ---------- Weather Data ---------- */}
-                {weather && !loading && (
-                    <>
-                        {/* Main display */}
-                        <GlassCard className="p-8 md:p-10 mb-6 animate-slide-up text-center">
-                            <div className="flex flex-col items-center gap-3">
-                                {/* Weather icon */}
-                                <div className="relative">
-                                    <div className="absolute inset-0 bg-white/10 rounded-full blur-2xl scale-150" />
-                                    <div className="relative bg-white/10 rounded-full p-5">
-                                        <WeatherIcon className="w-16 h-16 md:w-20 md:h-20 drop-shadow-lg" />
-                                    </div>
-                                </div>
-
-                                {/* Temperature */}
-                                <div className="mt-2">
-                                    <span className="text-7xl md:text-8xl font-extrabold tracking-tighter leading-none">
-                                        {weather.current.temperature}
-                                    </span>
-                                    <span className="text-3xl md:text-4xl font-light align-top ml-1">°C</span>
-                                </div>
-
-                                {/* Description */}
-                                <p className="text-lg md:text-xl font-medium text-white/80">{description}</p>
-
-                                {/* Feels like */}
-                                <div className="flex items-center gap-2 text-white/60 text-sm">
-                                    <Thermometer className="w-4 h-4" />
-                                    Feels like {weather.current.feelslike}°C
-                                </div>
-
-                                {/* Location */}
-                                <div className="flex items-center gap-2 text-white/70 mt-2">
-                                    <MapPin className="w-5 h-5" />
-                                    <span className="text-lg font-semibold">
-                                        {weather.location.name}
-                                        {weather.location.region ? `, ${weather.location.region}` : ''}
-                                    </span>
-                                    <span className="text-white/50">—</span>
-                                    <span className="text-white/50">{weather.location.country}</span>
-                                </div>
-
-                                {/* Local time */}
-                                <div className="flex items-center gap-2 text-white/50 text-sm">
-                                    <Clock className="w-4 h-4" />
-                                    Local time: {weather.location.localtime}
-                                </div>
-
-                                {/* Wind */}
-                                <div className="flex items-center gap-2 mt-2 text-white/60 text-sm">
-                                    <Wind className="w-4 h-4" />
-                                    Wind {weather.current.wind_speed} km/h {weather.current.wind_dir}
-                                    <span className="mx-1 text-white/30">•</span>
-                                    <Cloud className="w-4 h-4" />
-                                    Cloud cover {weather.current.cloudcover}%
-                                </div>
-                            </div>
-                        </GlassCard>
-
-                        {/* Details grid */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 animate-slide-up" style={{ animationDelay: '150ms' }}>
-                            {/* Humidity */}
-                            <GlassCard className="p-5 hover:bg-white/20 transition-colors group" delay={200}>
-                                <Droplets className="w-8 h-8 mb-3 text-blue-300 group-hover:scale-110 transition-transform" />
-                                <p className="text-white/50 text-xs font-semibold uppercase tracking-wider mb-1">
-                                    Humidity
-                                </p>
-                                <p className="text-2xl md:text-3xl font-bold">{weather.current.humidity}%</p>
-                                <p className="text-white/40 text-xs mt-1">
-                                    {weather.current.humidity > 70
-                                        ? 'High moisture'
-                                        : weather.current.humidity > 40
-                                            ? 'Comfortable'
-                                            : 'Dry air'}
-                                </p>
-                            </GlassCard>
-
-                            {/* UV Index */}
-                            <GlassCard className="p-5 hover:bg-white/20 transition-colors group" delay={300}>
-                                <Sun className="w-8 h-8 mb-3 text-yellow-300 group-hover:scale-110 transition-transform" />
-                                <p className="text-white/50 text-xs font-semibold uppercase tracking-wider mb-1">
-                                    UV Index
-                                </p>
-                                <p className="text-2xl md:text-3xl font-bold">{weather.current.uv_index}</p>
-                                <p className={`text-xs mt-1 ${getUvLabel(weather.current.uv_index).color}`}>
-                                    {getUvLabel(weather.current.uv_index).label}
-                                </p>
-                            </GlassCard>
-
-                            {/* Visibility */}
-                            <GlassCard className="p-5 hover:bg-white/20 transition-colors group" delay={400}>
-                                <Eye className="w-8 h-8 mb-3 text-cyan-300 group-hover:scale-110 transition-transform" />
-                                <p className="text-white/50 text-xs font-semibold uppercase tracking-wider mb-1">
-                                    Visibility
-                                </p>
-                                <p className="text-2xl md:text-3xl font-bold">{weather.current.visibility} km</p>
-                                <p className="text-white/40 text-xs mt-1">
-                                    {weather.current.visibility >= 10
-                                        ? 'Crystal clear'
-                                        : weather.current.visibility >= 5
-                                            ? 'Good'
-                                            : 'Poor visibility'}
-                                </p>
-                            </GlassCard>
-
-                            {/* Pressure */}
-                            <GlassCard className="p-5 hover:bg-white/20 transition-colors group" delay={500}>
-                                <Gauge className="w-8 h-8 mb-3 text-emerald-300 group-hover:scale-110 transition-transform" />
-                                <p className="text-white/50 text-xs font-semibold uppercase tracking-wider mb-1">
-                                    Pressure
-                                </p>
-                                <p className="text-2xl md:text-3xl font-bold">{weather.current.pressure} mb</p>
-                                <p className="text-white/40 text-xs mt-1">
-                                    {weather.current.pressure >= 1013
-                                        ? 'High pressure'
-                                        : 'Low pressure'}
-                                </p>
-                            </GlassCard>
+                        <div className="relative flex-1">
+                            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                            <input
+                                id="search-input"
+                                type="text"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                placeholder="Search city, zip, or coordinates…"
+                                className="
+                  w-full pl-13 pr-5 py-3.5
+                  bg-white/8 backdrop-blur-xl saturate-150
+                  border border-white/20 rounded-full
+                  text-white placeholder:text-white/35
+                  focus:outline-none focus-cyan
+                  transition-all duration-300
+                  text-sm font-medium tracking-wide
+                  glass-shadow
+                "
+                            />
                         </div>
 
-                        {/* Footer */}
-                        <footer className="text-center mt-10 text-white/30 text-xs">
-                            Last updated · UTC {weather.location.utc_offset} · Weatherstack API
-                        </footer>
-                    </>
-                )}
+                        <button
+                            type="submit"
+                            id="search-button"
+                            className="
+                px-7 py-3.5
+                bg-white/10 hover:bg-white/20
+                backdrop-blur-xl saturate-150
+                border border-white/20 rounded-full
+                font-semibold text-sm tracking-wide
+                transition-all duration-300
+                flex items-center justify-center gap-2
+                cursor-pointer glass-shadow
+                hover:-translate-y-0.5
+              "
+                        >
+                            <Search className="w-4 h-4" />
+                            Search
+                        </button>
 
-                {/* No data + not loading */}
-                {!weather && !loading && (
-                    <div className="text-center mt-20 animate-fade-in">
-                        <Cloud className="w-20 h-20 mx-auto text-white/20 mb-4" />
-                        <p className="text-white/40 text-lg">
-                            Search for a city to get started
-                        </p>
-                    </div>
-                )}
+                        <button
+                            type="button"
+                            id="locate-button"
+                            onClick={handleLocateMe}
+                            disabled={locating}
+                            className="
+                px-6 py-3.5
+                bg-white/10 hover:bg-white/20
+                backdrop-blur-xl saturate-150
+                border border-white/20 rounded-full
+                font-semibold text-sm tracking-wide
+                transition-all duration-300
+                flex items-center justify-center gap-2
+                disabled:opacity-40 cursor-pointer glass-shadow
+                hover:-translate-y-0.5
+              "
+                        >
+                            {locating ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                                <Navigation className="w-4 h-4" />
+                            )}
+                            Locate Me
+                        </button>
+                    </form>
+
+                    {/* ── Loading ── */}
+                    {loading && <LoadingSkeleton />}
+
+                    {/* ── Weather Data ── */}
+                    {weather && !loading && (
+                        <>
+                            {/* Main display card */}
+                            <GlassCard className="p-10 md:p-14 mb-8 animate-slide-up text-center">
+                                <div className="flex flex-col items-center gap-4">
+                                    {/* Weather icon with outer glow */}
+                                    <div className="relative animate-float">
+                                        <div className="absolute inset-0 bg-cyan-400/15 rounded-full blur-3xl scale-[1.8]" />
+                                        <div className="relative bg-white/8 backdrop-blur-md border border-white/15 rounded-full p-6">
+                                            <WeatherIcon className="w-18 h-18 md:w-22 md:h-22 icon-glow" />
+                                        </div>
+                                    </div>
+
+                                    {/* Temperature */}
+                                    <div className="mt-3">
+                                        <span className="text-8xl md:text-9xl font-extrabold tracking-tighter leading-none">
+                                            {weather.current.temperature}
+                                        </span>
+                                        <span className="text-3xl md:text-4xl font-light align-top ml-1 text-white/70">
+                                            °C
+                                        </span>
+                                    </div>
+
+                                    {/* Description */}
+                                    <p className="text-xl md:text-2xl font-medium text-white/75 tracking-wide">
+                                        {description}
+                                    </p>
+
+                                    {/* Feels like */}
+                                    <div className="flex items-center gap-2 text-white/50 text-sm">
+                                        <Thermometer className="w-4 h-4" />
+                                        Feels like {weather.current.feelslike}°C
+                                    </div>
+
+                                    {/* Location */}
+                                    <div className="flex items-center gap-2 text-white/65 mt-1">
+                                        <MapPin className="w-5 h-5 text-[#D0001B]" />
+                                        <span className="text-lg font-semibold">
+                                            {weather.location.name}
+                                            {weather.location.region ? `, ${weather.location.region}` : ''}
+                                        </span>
+                                        <span className="text-white/30 mx-1">—</span>
+                                        <span className="text-white/45">{weather.location.country}</span>
+                                    </div>
+
+                                    {/* Local time */}
+                                    <div className="flex items-center gap-2 text-white/40 text-sm">
+                                        <Clock className="w-4 h-4" />
+                                        Local time: {weather.location.localtime}
+                                    </div>
+
+                                    {/* Wind + Cloud bar */}
+                                    <div className="flex items-center gap-3 mt-3 px-5 py-2.5 bg-white/5 backdrop-blur-md rounded-full border border-white/10 text-white/55 text-sm">
+                                        <Wind className="w-4 h-4 text-cyan-400/80" />
+                                        <span>{weather.current.wind_speed} km/h {weather.current.wind_dir}</span>
+                                        <span className="text-white/20">|</span>
+                                        <Cloud className="w-4 h-4 text-white/40" />
+                                        <span>{weather.current.cloudcover}% cover</span>
+                                    </div>
+                                </div>
+                            </GlassCard>
+
+                            {/* ── Details grid ── */}
+                            <div
+                                className="grid grid-cols-2 md:grid-cols-4 gap-5 animate-slide-up"
+                                style={{ animationDelay: '200ms' }}
+                            >
+                                {/* Humidity */}
+                                <GlassCard
+                                    className="p-6 hover:bg-white/20 transition-all duration-300 group hover:-translate-y-1"
+                                    delay={250}
+                                >
+                                    <div className="bg-blue-500/15 rounded-xl p-2.5 w-fit mb-4 group-hover:bg-blue-500/25 transition-colors">
+                                        <Droplets className="w-7 h-7 text-blue-400 group-hover:scale-110 transition-transform" />
+                                    </div>
+                                    <p className="text-white/45 text-xs font-semibold uppercase tracking-widest mb-1.5">
+                                        Humidity
+                                    </p>
+                                    <p className="text-3xl font-bold tracking-tight">
+                                        {weather.current.humidity}
+                                        <span className="text-lg font-normal text-white/50 ml-0.5">%</span>
+                                    </p>
+                                    <p className="text-white/35 text-xs mt-2">
+                                        {weather.current.humidity > 70
+                                            ? 'High moisture'
+                                            : weather.current.humidity > 40
+                                                ? 'Comfortable'
+                                                : 'Dry air'}
+                                    </p>
+                                </GlassCard>
+
+                                {/* UV Index */}
+                                <GlassCard
+                                    className="p-6 hover:bg-white/20 transition-all duration-300 group hover:-translate-y-1"
+                                    delay={350}
+                                >
+                                    <div className="bg-yellow-500/15 rounded-xl p-2.5 w-fit mb-4 group-hover:bg-yellow-500/25 transition-colors">
+                                        <Sun className="w-7 h-7 text-yellow-400 group-hover:scale-110 transition-transform" />
+                                    </div>
+                                    <p className="text-white/45 text-xs font-semibold uppercase tracking-widest mb-1.5">
+                                        UV Index
+                                    </p>
+                                    <p className="text-3xl font-bold tracking-tight">{weather.current.uv_index}</p>
+                                    <p className={`text-xs mt-2 font-medium ${getUvLabel(weather.current.uv_index).color}`}>
+                                        {getUvLabel(weather.current.uv_index).label}
+                                    </p>
+                                </GlassCard>
+
+                                {/* Visibility */}
+                                <GlassCard
+                                    className="p-6 hover:bg-white/20 transition-all duration-300 group hover:-translate-y-1"
+                                    delay={450}
+                                >
+                                    <div className="bg-cyan-500/15 rounded-xl p-2.5 w-fit mb-4 group-hover:bg-cyan-500/25 transition-colors">
+                                        <Eye className="w-7 h-7 text-cyan-400 group-hover:scale-110 transition-transform" />
+                                    </div>
+                                    <p className="text-white/45 text-xs font-semibold uppercase tracking-widest mb-1.5">
+                                        Visibility
+                                    </p>
+                                    <p className="text-3xl font-bold tracking-tight">
+                                        {weather.current.visibility}
+                                        <span className="text-lg font-normal text-white/50 ml-1">km</span>
+                                    </p>
+                                    <p className="text-white/35 text-xs mt-2">
+                                        {weather.current.visibility >= 10
+                                            ? 'Crystal clear'
+                                            : weather.current.visibility >= 5
+                                                ? 'Good'
+                                                : 'Poor visibility'}
+                                    </p>
+                                </GlassCard>
+
+                                {/* Pressure */}
+                                <GlassCard
+                                    className="p-6 hover:bg-white/20 transition-all duration-300 group hover:-translate-y-1"
+                                    delay={550}
+                                >
+                                    <div className="bg-emerald-500/15 rounded-xl p-2.5 w-fit mb-4 group-hover:bg-emerald-500/25 transition-colors">
+                                        <Gauge className="w-7 h-7 text-emerald-400 group-hover:scale-110 transition-transform" />
+                                    </div>
+                                    <p className="text-white/45 text-xs font-semibold uppercase tracking-widest mb-1.5">
+                                        Pressure
+                                    </p>
+                                    <p className="text-3xl font-bold tracking-tight">
+                                        {weather.current.pressure}
+                                        <span className="text-lg font-normal text-white/50 ml-1">mb</span>
+                                    </p>
+                                    <p className="text-white/35 text-xs mt-2">
+                                        {weather.current.pressure >= 1013 ? 'High pressure' : 'Low pressure'}
+                                    </p>
+                                </GlassCard>
+                            </div>
+
+                            {/* Footer */}
+                            <footer className="text-center mt-12 text-white/25 text-xs tracking-wide">
+                                Last updated · UTC {weather.location.utc_offset} · Weatherstack API
+                            </footer>
+                        </>
+                    )}
+
+                    {/* No data + not loading */}
+                    {!weather && !loading && (
+                        <div className="text-center mt-24 animate-fade-in">
+                            <div className="relative inline-block">
+                                <div className="absolute inset-0 bg-white/5 rounded-full blur-2xl scale-150" />
+                                <Cloud className="relative w-24 h-24 mx-auto text-white/15 mb-5" />
+                            </div>
+                            <p className="text-white/35 text-lg font-medium">
+                                Search for a city to get started
+                            </p>
+                        </div>
+                    )}
+                </div>
             </div>
-        </div>
+        </>
     );
 }

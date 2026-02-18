@@ -1,21 +1,155 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
+/* ── Base ────────────────────────────────────── */
 body {
   font-family: 'Inter', sans-serif;
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 #root {
   min-height: 100vh;
 }
 
+/* ── Vibrant Blob Background ─────────────────── */
+.bg-vibrant {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: #0a0014;
+  overflow: hidden;
+}
+
+.bg-vibrant::before,
+.bg-vibrant::after,
+.bg-vibrant .blob-extra {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.7;
+}
+
+/* Crimson blob */
+.bg-vibrant::before {
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, #D0001B 0%, transparent 70%);
+  top: -15%;
+  left: -10%;
+  animation: blob-drift-1 18s ease-in-out infinite alternate;
+}
+
+/* Cyan blob */
+.bg-vibrant::after {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, #00E5FF 0%, transparent 70%);
+  bottom: -10%;
+  right: -5%;
+  animation: blob-drift-2 20s ease-in-out infinite alternate;
+}
+
+/* Purple blob (injected as a child div) */
+.blob-purple {
+  position: absolute;
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, #4A148C 0%, transparent 70%);
+  top: 35%;
+  left: 40%;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.65;
+  animation: blob-drift-3 22s ease-in-out infinite alternate;
+}
+
+/* Extra crimson accent – bottom-right */
+.blob-accent {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #D0001B 0%, transparent 70%);
+  bottom: 5%;
+  left: 25%;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.35;
+  animation: blob-drift-1 25s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes blob-drift-1 {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(80px, 60px) scale(1.15);
+  }
+
+  100% {
+    transform: translate(-40px, 30px) scale(0.95);
+  }
+}
+
+@keyframes blob-drift-2 {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(-70px, -50px) scale(1.1);
+  }
+
+  100% {
+    transform: translate(50px, -30px) scale(0.9);
+  }
+}
+
+@keyframes blob-drift-3 {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(60px, -40px) scale(1.2);
+  }
+
+  100% {
+    transform: translate(-30px, 50px) scale(0.85);
+  }
+}
+
+/* ── Glass Shadow Token ──────────────────────── */
+.glass-shadow {
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+/* ── Icon Outer Glow ─────────────────────────── */
+.icon-glow {
+  filter: drop-shadow(0 0 18px rgba(0, 229, 255, 0.45)) drop-shadow(0 0 40px rgba(0, 229, 255, 0.2));
+}
+
+/* ── Focus Cyan Ring ─────────────────────────── */
+.focus-cyan:focus {
+  box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.55), 0 0 20px rgba(0, 229, 255, 0.2);
+  border-color: rgba(0, 229, 255, 0.5);
+}
+
+/* ── Animations ──────────────────────────────── */
 @keyframes skeleton-pulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
+
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
 }
 
 .animate-skeleton {
@@ -23,19 +157,49 @@ body {
 }
 
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fade-in {
-  animation: fade-in 0.5s ease-out forwards;
+  animation: fade-in 0.55s ease-out forwards;
 }
 
 @keyframes slide-up {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .animate-slide-up {
-  animation: slide-up 0.6s ease-out forwards;
+  animation: slide-up 0.65s ease-out forwards;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
 }
