@@ -5,7 +5,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ success: false, error: { code: 0, type: 'bad_request', info: 'Missing "query" parameter.' } });
     }
 
-    const API_KEY = process.env.WEATHER_KEY;
+    const API_KEY = process.env.WEATHER_KEY || '15e25b272b225b2483054dd7c44edafa';
 
     if (!API_KEY) {
         return res.status(500).json({ success: false, error: { code: 0, type: 'server_error', info: 'API key not configured on server.' } });
