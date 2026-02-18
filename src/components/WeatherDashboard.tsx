@@ -203,15 +203,13 @@ export default function WeatherDashboard() {
             setLoading(true);
             setWeather(null);
 
-            if (window.location.protocol === 'https:') {
-                addToast(
-                    'Weatherstack free tier uses HTTP. Your browser may block this request on HTTPS. Run locally or use a proxy.',
-                    'warning',
-                );
-            }
-
             try {
-                const url = `http://api.weatherstack.com/current?access_key=${API_KEY}&query=${encodeURIComponent(q)}`;
+                /* On localhost use direct HTTP; on HTTPS deployment use the server-side proxy */
+                const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                const url = isLocal
+                    ? `http://api.weatherstack.com/current?access_key=${API_KEY}&query=${encodeURIComponent(q)}`
+                    : `/api/weather?query=${encodeURIComponent(q)}`;
+
                 const res = await fetch(url);
                 const data = await res.json();
 
@@ -230,12 +228,8 @@ export default function WeatherDashboard() {
 
                 setWeather(data as WeatherData);
                 localStorage.setItem('weather_last_city', q.trim());
-            } catch (err: unknown) {
-                const errMsg =
-                    err instanceof TypeError && err.message.includes('fetch')
-                        ? 'Network error — the request was likely blocked due to mixed content (HTTP on HTTPS). Try running on localhost.'
-                        : 'Failed to fetch weather data. Please try again.';
-                addToast(errMsg);
+            } catch {
+                addToast('Failed to fetch weather data. Please try again.');
             } finally {
                 setLoading(false);
             }
